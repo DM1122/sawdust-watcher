@@ -1,7 +1,7 @@
 #!/bin/sh
 # sawdust_watcher_boot.sh
 
-pip install git+https://github.com/DM1122/sawdust_watcher
+pip install git+https://github.com/DM1122/sawdust-watcher
 python
 import sawdust_watcher, os
 print(os.getcwd())
