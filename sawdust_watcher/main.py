@@ -29,7 +29,6 @@ camera.resolution = (3280, 2464)
 # endregion
 
 
-
 def run(output_path):
     """Run the main loop.
 
@@ -45,7 +44,9 @@ def run(output_path):
     logging.basicConfig(
         handlers=[
             logging.FileHandler(
-                (log_path / Path(__file__).stem).with_suffix(".log"), "w", encoding="utf-8"
+                (log_path / Path(__file__).stem).with_suffix(".log"),
+                "w",
+                encoding="utf-8",
             )
         ],
         format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)",
@@ -89,4 +90,3 @@ def run(output_path):
 
 if __name__ == "__main__":
     run(output_path="output")
-
