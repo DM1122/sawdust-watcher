@@ -6,7 +6,7 @@ from pathlib import Path
 
 # external
 from gpiozero import LED, Button, Buzzer
-from piCamera import PiCamera
+from picamera import PiCamera
 
 # project
 from sawdust_watcher import detection, gpio_control
