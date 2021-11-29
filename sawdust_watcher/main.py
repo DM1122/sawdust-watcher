@@ -8,10 +8,13 @@ from pathlib import Path
 from gpiozero import LED, Button, Buzzer
 from picamera import PiCamera
 
-# project
-from sawdust_watcher import detection, gpio_control
-
-LOG = logging.getLogger(__name__)
+try:  # import as package
+    # project
+    from sawdust_watcher import detection, gpio_control
+except ImportError:  # import as standalone
+    # external
+    import detection
+    import gpio_control
 
 
 # region config
@@ -39,7 +42,7 @@ def run(output_path):
 
     # region logging config
     time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
-    log_path = output_path / f"{time_stamp}.log"
+    log_path = output_path / f"{time_stamp}"
     log_path.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
         handlers=[
