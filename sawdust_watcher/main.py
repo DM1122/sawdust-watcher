@@ -48,7 +48,7 @@ def run(output_path):
     Args:
         output_path (str): The output path for logging and images.
     """
-    output_path = Path(output_path)
+    output_path = Path(output_path).expanduser()
 
     # region logging config
     time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
