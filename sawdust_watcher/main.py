@@ -5,7 +5,7 @@ Usage:
 
 Options:
     --log-dir=<path>  The output path for logs and images.
-    --config=<path> The config file path. [Default: config.ini]
+    --config=<path>  The config file path. [default: config.ini]
 """
 
 # stdlib
