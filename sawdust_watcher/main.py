@@ -73,7 +73,10 @@ def run(output_path, config):
                 img_path = gpio_control.grab_frame(output_path / "captures")
                 img = detection.load_image(img_path)
                 coverage_ratio = detection.detect(
-                    img=img, output_path=output_path / "captures"
+                    img=img,
+                    output_path=output_path / "captures",
+                    thresh_lower=config.getint("op", "thresh_lower"),
+                    thresh_upper=config.getint("op", "thresh_upper"),
                 )
 
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
@@ -87,7 +90,7 @@ def run(output_path, config):
                     led.on()
                     buzzer.on()
                     alarm_active = False  # DEBUGGGGG
-                    time_start = time.time() # DEBUGGGGG
+                    time_start = time.time()  # DEBUGGGGG
 
         if button.is_pressed:
             LOG.info("Button pressed. Resetting alarm")

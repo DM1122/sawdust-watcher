@@ -70,7 +70,7 @@ def rescale_image(img, scale):
     return img
 
 
-def detect(img, output_path):
+def detect(img, output_path, thresh_lower=128, thresh_upper=255):
     """Detect sawdust coverage in an image.
 
     The approach taken involves the use of a denoising filter to act as a swadust
@@ -85,11 +85,11 @@ def detect(img, output_path):
     Args:
         img (numpy.ndarray): The image to be analysed.
         output_path (str, pathlib.Path): The path to save the image to.
+        thresh (float): The threshold value for the segmented image.
 
     Returns:
         (float): Sawdust coverage ratio.
     """
-    LOG.debug(f"Image ({type(img)}): {img}")
     # denoising
     img_denoised = cv.fastNlMeansDenoisingColored(
         img, dst=None, h=10, hColor=10, templateWindowSize=7, searchWindowSize=21
@@ -102,8 +102,11 @@ def detect(img, output_path):
     img_gray = cv.cvtColor(img_diff, cv.COLOR_BGR2GRAY)
 
     # thresholding
-    _, img_thresh = cv.threshold(img_gray, 120, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    _, img_thresh = cv.threshold(
+        img_gray, thresh_lower, thresh_upper, cv.THRESH_BINARY + cv.THRESH_OTSU
+    )
 
+    # write semgented image
     time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     img_path = output_path / f"{time_stamp}_segmentation.png"
     write_image(img=img_thresh, output_path=img_path)
