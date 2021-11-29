@@ -38,15 +38,15 @@ def run(output_path, config):
 
     # region logging config
     log_time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
-    log_path = output_path / log_time_stamp
+    log_path = output_path / "logs"
     log_path.mkdir(parents=True, exist_ok=True)
-    log_name = (log_path / Path(__file__).stem).with_suffix(".log")
+    log_file_path = log_path / log_time_stamp + ".log"
     logging.basicConfig(
         level=logging.DEBUG,
         format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)",
         datefmt="%Y-%m-%d %H:%M:%S",
         handlers=[
-            logging.FileHandler(filename=log_name, mode="w", encoding="utf-8"),
+            logging.FileHandler(filename=log_file_path, mode="w", encoding="utf-8"),
             logging.StreamHandler(),
         ],
     )
@@ -72,7 +72,9 @@ def run(output_path, config):
 
                 img_path = gpio_control.grab_frame(output_path / "captures")
                 img = detection.load_image(img_path)
-                coverage_ratio = detection.detect(img)
+                coverage_ratio = detection.detect(
+                    img=img, output_path=output_path / "captures"
+                )
 
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
 
@@ -84,6 +86,7 @@ def run(output_path, config):
                     alarm_active = True
                     led.on()
                     buzzer.on()
+                    alarm_active = False  # DEBUGGGGG
 
         if button.is_pressed:
             LOG.info("Button pressed. Resetting alarm")

@@ -1,6 +1,7 @@
 """Detection methods for sawdust watcher."""
 # stdlib
 import logging
+import time
 
 # external
 import cv2 as cv
@@ -28,6 +29,22 @@ def load_image(img_path):
     return img
 
 
+def write_image(img, output_path):
+    """Save an image to disk.
+
+    Args:
+        img (numpy.ndarray): The image array to save.
+        output_path (str, pathlib.Path): The path to save image to.
+
+    Returns:
+        bool: True if the image was successfully saved, False otherwise.
+    """
+    result = cv.imwrite(filename=str(output_path), img=img)
+
+    if result == False:
+        raise ValueError("Image failed to save.")
+
+
 def white_pixel_ratio(img):
     """Calculates the ratio of white pixels to the total number of pixels in an image.
 
@@ -53,20 +70,7 @@ def rescale_image(img, scale):
     return img
 
 
-def write_image(img, output_path):
-    """Save an image to disk.
-
-    Args:
-        img (numpy.ndarray): The image array to save.
-        output_path (str, pathlib.Path): The path to save image to.
-
-    Returns:
-        bool: True if the image was successfully saved, False otherwise.
-    """
-    return cv.imwrite(filename=str(output_path), img=img)
-
-
-def detect(img):
+def detect(img, output_path):
     """Detect sawdust coverage in an image.
 
     The approach taken involves the use of a denoising filter to act as a swadust
@@ -79,7 +83,8 @@ def detect(img):
     5) Calculate ratio of white pixels to total pixels (aka sawdust coverage).
 
     Args:
-        img (np.ndarray): The image to be analysed.
+        img (numpy.ndarray): The image to be analysed.
+        output_path (str, pathlib.Path): The path to save the image to.
 
     Returns:
         (float): Sawdust coverage ratio.
@@ -98,6 +103,10 @@ def detect(img):
 
     # thresholding
     _, img_thresh = cv.threshold(img_gray, 120, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+
+    time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+    img_path = output_path / f"{time_stamp}_segmentation.png"
+    write_image(img=img_thresh, output_path=img_path)
 
     # ratio
     ratio = white_pixel_ratio(img_thresh)
