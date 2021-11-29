@@ -15,7 +15,7 @@ from pathlib import Path
 # external
 from docopt import docopt
 from gpiozero import LED, Button, Buzzer
-from picamera import PiCamera
+
 
 try:  # import as package
     # project
@@ -27,7 +27,7 @@ except ModuleNotFoundError:  # import as standalone
 
 
 # region config
-scan_interval = 30  # sec
+scan_interval = 15  # sec
 coverage_threshold_percent = 5  # %
 # endregion
 
@@ -50,20 +50,18 @@ def run(output_path):
     output_path = Path(output_path).expanduser()
 
     # region logging config
-    time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
-    log_path = output_path / time_stamp
+    log_time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+    log_path = output_path / log_time_stamp
     log_path.mkdir(parents=True, exist_ok=True)
+    log_name = (log_path / Path(__file__).stem).with_suffix(".log")
     logging.basicConfig(
-        handlers=[
-            logging.FileHandler(
-                (log_path / Path(__file__).stem).with_suffix(".log"),
-                "w",
-                encoding="utf-8",
-            )
-        ],
+        level=logging.DEBUG,
         format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)",
         datefmt="%Y-%m-%d %H:%M:%S",
-        level=logging.DEBUG,
+        handlers=[
+            logging.FileHandler(filename=log_name, mode="w", encoding="utf-8"),
+            logging.StreamHandler()
+        ]
     )
     LOG = logging.getLogger(__name__)
     # endregion

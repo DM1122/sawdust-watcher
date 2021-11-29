@@ -1,6 +1,7 @@
 """Methods for controlling GPIO on raspberry pi."""
 # stdlib
 import time
+from picamera import PiCamera
 
 
 def flash_led(led):
@@ -15,7 +16,7 @@ def flash_led(led):
     time.sleep(0.5)
 
 
-def grab_frame(camera, output_path):
+def grab_frame(output_path):
     """Capture a frame from the camera and save to disk.
 
     Args:
@@ -25,11 +26,12 @@ def grab_frame(camera, output_path):
     Returns:
         str: The path to the saved image.
     """
-    camera.start_preview()
-    time.sleep(5)
-    time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
-    img_path = output_path / f"{time_stamp}.png"
-    camera.capture(str(img_path))
-    camera.stop_preview()
+
+    with picamera.PiCamera() as camera:
+        camera.start_preview()
+        time.sleep(3) # camera warmup
+        time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+        img_path = output_path / f"{time_stamp}.png"
+        camera.capture(str(img_path))
 
     return img_path
