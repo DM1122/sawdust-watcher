@@ -9,15 +9,14 @@ Options:
 """
 
 # stdlib
+import configparser
 import logging
 import time
 from pathlib import Path
 
 # external
 from docopt import docopt
-import configparser
 from gpiozero import LED, Button, Buzzer
-
 
 try:  # import as package
     # project
@@ -26,7 +25,6 @@ except ModuleNotFoundError:  # import as standalone
     # external
     import detection
     import gpio_control
-
 
 
 def run(output_path, config):
@@ -49,16 +47,16 @@ def run(output_path, config):
         datefmt="%Y-%m-%d %H:%M:%S",
         handlers=[
             logging.FileHandler(filename=log_name, mode="w", encoding="utf-8"),
-            logging.StreamHandler()
-        ]
+            logging.StreamHandler(),
+        ],
     )
     LOG = logging.getLogger(__name__)
     # endregion
 
-    # region gpio config
-    led = LED(config["gpio"]["led"])
-    buzzer = Buzzer(config["gpio"]["buzzer"])
-    button = Button(config["gpio"]["button"])
+    # region gpio instantiation
+    led = LED(config.getint("gpio", "led"))
+    buzzer = Buzzer(config.getint("gpio", "buzzer"))
+    button = Button(config.get("gpio", "button"))
     # endregion
 
     LOG.info("Starting sawdust watcher script")
@@ -69,7 +67,7 @@ def run(output_path, config):
     while True:
 
         if not alarm_active:
-            if time.time() >=  time_start + config["op"]["scan_interval"]:
+            if time.time() >= time_start + config.getint("op", "scan_interval"):
                 LOG.info("Scanning area for sawdust")
 
                 img_path = gpio_control.grab_frame(output_path / "captures")
@@ -78,7 +76,10 @@ def run(output_path, config):
 
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
 
-                if coverage_ratio >= config["op"]["coverage_threshold_percent"] / 100:
+                if (
+                    coverage_ratio
+                    >= config.getfloat("op", "coverage_threshold_percent") / 100
+                ):
                     LOG.info("Sawdust coverage exceeds threshold. Activating alarm")
                     alarm_active = True
                     led.on()

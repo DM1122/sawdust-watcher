@@ -650,6 +650,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "type-docopt"
+version = "0.8.2"
+description = "Pythonic argument parser, with type description."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typed-ast"
 version = "1.4.3"
 description = "a fork of Python 2 and 3 ast modules with type comment support"
@@ -741,7 +749,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "447a74f805a63e057b65e9159c9bf8bf0ef44d6fba3f2cc183c762250367bca4"
+content-hash = "93372cfbe8e012b41dfa6fe569dd56d15e935c8c8095003e7601d43ec5528dab"
 
 [metadata.files]
 altgraph = [
@@ -1294,6 +1302,10 @@ toml = [
 tomli = [
     {file = "tomli-1.2.2-py3-none-any.whl", hash = "sha256:f04066f68f5554911363063a30b108d2b5a5b1a010aa8b6132af78489fe3aade"},
     {file = "tomli-1.2.2.tar.gz", hash = "sha256:c6ce0015eb38820eaf32b5db832dbc26deb3dd427bd5f6556cf0acac2c214fee"},
+]
+type-docopt = [
+    {file = "type-docopt-0.8.2.tar.gz", hash = "sha256:ecd23359c3e184b9384f664f7a8c0de8550abc538af4f404e97eee99b9320b83"},
+    {file = "type_docopt-0.8.2-py3-none-any.whl", hash = "sha256:3a57e97f276f47da06954e08a0a94a89130d8c80dfa18ae22902f0e181b00773"},
 ]
 typed-ast = [
     {file = "typed_ast-1.4.3-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:2068531575a125b87a41802130fa7e29f26c09a2833fea68d9a40cf33902eba6"},

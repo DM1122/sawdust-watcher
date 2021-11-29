@@ -1,6 +1,8 @@
 """Methods for controlling GPIO on raspberry pi."""
 # stdlib
 import time
+
+# external
 from picamera import PiCamera
 
 
@@ -29,7 +31,7 @@ def grab_frame(output_path):
 
     with picamera.PiCamera() as camera:
         camera.start_preview()
-        time.sleep(3) # camera warmup
+        time.sleep(3)  # camera warmup
         time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
         img_path = output_path / f"{time_stamp}.png"
         camera.capture(str(img_path))
