@@ -9,7 +9,6 @@ Options:
 
 # stdlib
 import logging
-import math
 import time
 from pathlib import Path
 
@@ -28,7 +27,7 @@ except ModuleNotFoundError:  # import as standalone
 
 
 # region config
-scan_interval = 60  # sec
+scan_interval = 30  # sec
 coverage_threshold_percent = 5  # %
 # endregion
 
@@ -77,8 +76,7 @@ def run(output_path):
     while True:
 
         if not alarm_active:
-            LOG.debug(f"{(time.time() - time_start) % scan_interval}")
-            if math.isclose((time.time() - time_start) % scan_interval, 0):
+            if time.time() >=  time_start + scan_interval:
                 LOG.info("Scanning area for sawdust")
 
                 img_path = gpio_control.grab_frame(
