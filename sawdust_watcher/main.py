@@ -1,10 +1,20 @@
-"""Main runtime code for sawdust watcher prototype."""
+"""Main runtime code for sawdust watcher prototype.
+
+Usage:
+    main.py --log-dir=<path>
+
+Options:
+    --log-dir=<path>  The output path for logs and images.
+"""
+
 # stdlib
 import logging
+import math
 import time
 from pathlib import Path
 
 # external
+from docopt import docopt
 from gpiozero import LED, Button, Buzzer
 from picamera import PiCamera
 
@@ -18,7 +28,7 @@ except ModuleNotFoundError:  # import as standalone
 
 
 # region config
-scan_interval = 5  # sec
+scan_interval = 60  # sec
 coverage_threshold_percent = 5  # %
 # endregion
 
@@ -67,7 +77,8 @@ def run(output_path):
     while True:
 
         if not alarm_active:
-            if (time.time() - time_start) % scan_interval == 0:
+            LOG.debug(f"{(time.time() - time_start) % scan_interval}")
+            if math.isclose((time.time() - time_start) % scan_interval, 0):
                 LOG.info("Scanning area for sawdust")
 
                 img_path = gpio_control.grab_frame(
@@ -75,7 +86,7 @@ def run(output_path):
                 )
                 detection.load_image(img_path)
                 coverage_ratio = detection.detect(img_path)
-                
+
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
 
                 if coverage_ratio >= coverage_threshold_percent / 100:
@@ -93,4 +104,5 @@ def run(output_path):
 
 
 if __name__ == "__main__":
-    run(output_path="output")
+    args = docopt(__doc__)
+    run(output_path=args["--log-dir"])
