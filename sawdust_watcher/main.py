@@ -40,7 +40,7 @@ def run(output_path, config):
     log_time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
     log_path = output_path / "logs"
     log_path.mkdir(parents=True, exist_ok=True)
-    log_file_path = log_path / log_time_stamp + ".log"
+    log_file_path = (log_path / log_time_stamp).with_suffix(".log")
     logging.basicConfig(
         level=logging.DEBUG,
         format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)",
