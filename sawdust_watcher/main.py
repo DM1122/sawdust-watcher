@@ -75,9 +75,9 @@ def run(output_path):
                 )
                 detection.load_image(img_path)
                 coverage_ratio = detection.detect(img_path)
-                print(coverage_ratio)
-                print(type(coverage_ratio))
-                LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
+                
+                coverage_ratio_rounded = round(coverage_ratio*100,2)
+                LOG.info(f"Sawdust detected at {coverage_ratio_rounded}% coverage")
 
                 if coverage_ratio >= coverage_threshold_percent / 100:
                     LOG.info("Sawdust coverage exceeds threshold. Activating alarm")
