@@ -11,7 +11,7 @@ from picamera import PiCamera
 try:  # import as package
     # project
     from sawdust_watcher import detection, gpio_control
-except ImportError:  # import as standalone
+except ModuleNotFoundError:  # import as standalone
     # external
     import detection
     import gpio_control
