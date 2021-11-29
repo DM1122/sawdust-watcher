@@ -1,10 +1,11 @@
 """Main runtime code for sawdust watcher prototype.
 
 Usage:
-    main.py --log-dir=<path>
+    main.py --log-dir=<path> --config=<path>
 
 Options:
     --log-dir=<path>  The output path for logs and images.
+    --config=<path> The config file path. [Default: config.ini]
 """
 
 # stdlib
@@ -14,6 +15,7 @@ from pathlib import Path
 
 # external
 from docopt import docopt
+import configparser
 from gpiozero import LED, Button, Buzzer
 
 
@@ -26,26 +28,13 @@ except ModuleNotFoundError:  # import as standalone
     import gpio_control
 
 
-# region config
-scan_interval = 15  # sec
-coverage_threshold_percent = 5  # %
-# endregion
 
-# region GPIO
-led = LED(5)
-button = Button(4)
-buzzer = Buzzer(27)
-
-camera = PiCamera()
-camera.resolution = (3280, 2464)
-# endregion
-
-
-def run(output_path):
+def run(output_path, config):
     """Run the main loop.
 
     Args:
         output_path (str): The output path for logging and images.
+        config (dict): The configuration.
     """
     output_path = Path(output_path).expanduser()
 
@@ -66,6 +55,12 @@ def run(output_path):
     LOG = logging.getLogger(__name__)
     # endregion
 
+    # region gpio config
+    led = LED(config["gpio"]["led"])
+    buzzer = Buzzer(config["gpio"]["buzzer"])
+    button = Button(config["gpio"]["button"])
+    # endregion
+
     LOG.info("Starting sawdust watcher script")
 
     time_start = time.time()
@@ -74,18 +69,16 @@ def run(output_path):
     while True:
 
         if not alarm_active:
-            if time.time() >=  time_start + scan_interval:
+            if time.time() >=  time_start + config["op"]["scan_interval"]:
                 LOG.info("Scanning area for sawdust")
 
-                img_path = gpio_control.grab_frame(
-                    camera=camera, output_path=output_path / "captures"
-                )
+                img_path = gpio_control.grab_frame(output_path / "captures")
                 detection.load_image(img_path)
                 coverage_ratio = detection.detect(img_path)
 
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
 
-                if coverage_ratio >= coverage_threshold_percent / 100:
+                if coverage_ratio >= config["op"]["coverage_threshold_percent"] / 100:
                     LOG.info("Sawdust coverage exceeds threshold. Activating alarm")
                     alarm_active = True
                     led.on()
@@ -101,4 +94,8 @@ def run(output_path):
 
 if __name__ == "__main__":
     args = docopt(__doc__)
-    run(output_path=args["--log-dir"])
+
+    config = configparser.ConfigParser()
+    config.read(args["--config"])
+
+    run(output_path=args["--log-dir"], config=config)

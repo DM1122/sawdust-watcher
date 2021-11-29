@@ -2,6 +2,8 @@
 # sawdust_watcher_boot.sh
 
 cd Documents/sawdust-watcher/sawdust_watcher/
-git pull origin main
-python main.py
+git pull origin main # 
+# git fetch
+# git reset --hard origin
+python3 main.py --log-dir ~/Desktop/sawdust_watcher_output
 
