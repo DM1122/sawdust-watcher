@@ -104,7 +104,7 @@ def detect(img, output_path):
     # thresholding
     _, img_thresh = cv.threshold(img_gray, 120, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
-    time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+    time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     img_path = output_path / f"{time_stamp}_segmentation.png"
     write_image(img=img_thresh, output_path=img_path)
 

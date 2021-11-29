@@ -37,7 +37,7 @@ def run(output_path, config):
     output_path = Path(output_path).expanduser()
 
     # region logging config
-    log_time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+    log_time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     log_path = output_path / "logs"
     log_path.mkdir(parents=True, exist_ok=True)
     log_file_path = (log_path / log_time_stamp).with_suffix(".log")
@@ -56,7 +56,7 @@ def run(output_path, config):
     # region gpio instantiation
     led = LED(config.getint("gpio", "led"))
     buzzer = Buzzer(config.getint("gpio", "buzzer"))
-    button = Button(config.get("gpio", "button"))
+    button = Button(config.getint("gpio", "button"))
     # endregion
 
     LOG.info("Starting sawdust watcher script")

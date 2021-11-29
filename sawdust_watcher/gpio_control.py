@@ -33,7 +33,7 @@ def grab_frame(output_path):
     with picamera.PiCamera() as camera:
         camera.start_preview()
         time.sleep(3)  # camera warmup
-        time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+        time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         img_path = output_path / f"{time_stamp}.png"
         camera.capture(str(img_path))
 
