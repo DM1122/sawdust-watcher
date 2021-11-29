@@ -92,7 +92,7 @@ def detect(img, output_path, thresh_lower=128, thresh_upper=255):
     """
     # denoising
     img_denoised = cv.fastNlMeansDenoisingColored(
-        img, dst=None, h=10, hColor=10, templateWindowSize=7, searchWindowSize=21
+        img, dst=None, h=1, hColor=10, templateWindowSize=7, searchWindowSize=21
     )
 
     # differencing
@@ -106,10 +106,14 @@ def detect(img, output_path, thresh_lower=128, thresh_upper=255):
         img_gray, thresh_lower, thresh_upper, cv.THRESH_BINARY + cv.THRESH_OTSU
     )
 
-    # write semgented image
+    # contour removal
+    img_median = cv.medianBlur(img_thresh, 25)
+    img_median_diff = cv.subtract(img_thresh, img_median)
+
+    # write segmented image
     time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     img_path = output_path / f"{time_stamp}_segmentation.png"
-    write_image(img=img_thresh, output_path=img_path)
+    write_image(img=img_median_diff, output_path=img_path)
 
     # ratio
     ratio = white_pixel_ratio(img_thresh)

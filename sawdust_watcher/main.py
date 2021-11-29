@@ -70,13 +70,16 @@ def run(output_path, config):
             if time.time() >= time_start + config.getint("op", "scan_interval"):
                 LOG.info("Scanning area for sawdust")
 
-                img_path = gpio_control.grab_frame(output_path / "captures")
+                img_path = gpio_control.grab_frame(
+                    output_path / "captures",
+                    resolution=eval(config.get("op", "resolution")),
+                )
                 img = detection.load_image(img_path)
                 coverage_ratio = detection.detect(
                     img=img,
                     output_path=output_path / "captures",
-                    thresh_lower=config.getint("op", "thresh_lower"),
-                    thresh_upper=config.getint("op", "thresh_upper"),
+                    thresh_lower=config.getint("image", "thresh_lower"),
+                    thresh_upper=config.getint("image", "thresh_upper"),
                 )
 
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
@@ -89,8 +92,6 @@ def run(output_path, config):
                     alarm_active = True
                     led.on()
                     buzzer.on()
-                    alarm_active = False  # DEBUGGGGG
-                    time_start = time.time()  # DEBUGGGGG
 
         if button.is_pressed:
             LOG.info("Button pressed. Resetting alarm")

@@ -5,6 +5,7 @@ from pathlib import Path
 
 # external
 import numpy as np
+import pytest
 
 # project
 from sawdust_watcher import detection
@@ -59,5 +60,21 @@ def test_detect():
 
     LOG.info(f"Detecting sawdust in '{img_path}'")
     ratio = detection.detect(img)
+
+    LOG.info(f"Sawdust coverage: {round(ratio*100,2)}%")
+
+
+@pytest.mark.star
+def test_detect_cereal():
+    """Test the detection function."""
+    img_path = data_path / "test_cereal.jpg"
+
+    img = detection.load_image(img_path)
+    img = detection.rescale_image(img=img, scale=0.5)
+
+    LOG.info(f"Detecting sawdust in '{img_path}'")
+    ratio = detection.detect(
+        img=img, output_path=output_path, thresh_lower=128, thresh_upper=255
+    )
 
     LOG.info(f"Sawdust coverage: {round(ratio*100,2)}%")

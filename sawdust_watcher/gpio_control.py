@@ -18,12 +18,13 @@ def flash_led(led):
     time.sleep(0.5)
 
 
-def grab_frame(output_path):
+def grab_frame(output_path, resolution=(720, 480)):
     """Capture a frame from the camera and save to disk.
 
     Args:
         camera (gpiozero.PiCamera): The camera object.
         output_path (pathlib.Path): Output path in which to save the image.
+        resolution (tuple): The resolution of the image to capture. Defaults to (720,480).
 
     Returns:
         str: The path to the saved image.
@@ -31,6 +32,7 @@ def grab_frame(output_path):
     output_path.mkdir(parents=True, exist_ok=True)
 
     with picamera.PiCamera() as camera:
+        camera.resolution = resolution
         camera.start_preview()
         time.sleep(3)  # camera warmup
         time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
