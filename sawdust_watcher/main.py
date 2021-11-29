@@ -87,6 +87,7 @@ def run(output_path, config):
                     led.on()
                     buzzer.on()
                     alarm_active = False  # DEBUGGGGG
+                    time_start = time.time() # DEBUGGGGG
 
         if button.is_pressed:
             LOG.info("Button pressed. Resetting alarm")
