@@ -71,8 +71,8 @@ def run(output_path, config):
                 LOG.info("Scanning area for sawdust")
 
                 img_path = gpio_control.grab_frame(output_path / "captures")
-                detection.load_image(img_path)
-                coverage_ratio = detection.detect(img_path)
+                img = detection.load_image(img_path)
+                coverage_ratio = detection.detect(img)
 
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
 
