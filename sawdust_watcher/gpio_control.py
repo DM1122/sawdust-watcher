@@ -28,6 +28,7 @@ def grab_frame(output_path):
     Returns:
         str: The path to the saved image.
     """
+    output_path.mkdir(parents=True, exist_ok=True)
 
     with picamera.PiCamera() as camera:
         camera.start_preview()
