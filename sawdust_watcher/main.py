@@ -42,7 +42,7 @@ def run(output_path):
 
     # region logging config
     time_stamp = time.strftime("%Y-%m-%d %H:%M", time.localtime())
-    log_path = output_path / f"{time_stamp}"
+    log_path = output_path / time_stamp
     log_path.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
         handlers=[
