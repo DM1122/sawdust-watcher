@@ -3,7 +3,7 @@
 import time
 
 # external
-from picamera import PiCamera
+import picamera
 
 
 def flash_led(led):
