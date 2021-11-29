@@ -1,10 +1,10 @@
 """Main runtime code for sawdust watcher prototype.
 
 Usage:
-    main.py --log-dir=<path> --config=<path>
+    main.py --log=<path> [--config=<path>]
 
 Options:
-    --log-dir=<path>  The output path for logs and images.
+    --log=<path>  The output path for logs and images.
     --config=<path>  The config file path. [default: config.ini]
 """
 
@@ -98,4 +98,4 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read(args["--config"])
 
-    run(output_path=args["--log-dir"], config=config)
+    run(output_path=args["--log"], config=config)
