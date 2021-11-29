@@ -1,7 +1,12 @@
 """Detection methods for sawdust watcher."""
+# stdlib
+import logging
+
 # external
 import cv2 as cv
 import numpy as np
+
+LOG = logging.getLogger(__name__)
 
 
 def load_image(img_path):
@@ -79,6 +84,7 @@ def detect(img):
     Returns:
         (float): Sawdust coverage ratio.
     """
+    LOG.debug(f"Image ({type(img)}): {img}")
     # denoising
     img_denoised = cv.fastNlMeansDenoisingColored(
         img, dst=None, h=10, hColor=10, templateWindowSize=7, searchWindowSize=21
