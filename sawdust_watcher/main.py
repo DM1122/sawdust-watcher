@@ -71,7 +71,7 @@ def run(output_path, config):
                 LOG.info("Scanning area for sawdust")
 
                 img = gpio_control.grab_frame(
-                    eval(config.get("op", "resolution")),
+                    eval(config.get("camera", "resolution")),
                 )
                 coverage_ratio, img_pipe = detection.detect(
                     img=img,
