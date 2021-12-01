@@ -33,12 +33,12 @@ def write_image(img, output_path):
 
     Args:
         img (numpy.ndarray): The image array to save.
-        output_path (str, pathlib.Path): The path to save image to.
+        output_path (str, pathlib.Path): The path and filename to save image to.
 
     Returns:
         bool: True if the image was successfully saved, False otherwise.
     """
-    output_path.mkdir(parents=True, exist_ok=True)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     LOG.debug(f"Writing image {type(img)} {img.shape} to {output_path}")
     result = cv.imwrite(filename=str(output_path), img=img)
 
