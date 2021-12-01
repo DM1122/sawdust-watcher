@@ -64,7 +64,40 @@ def test_detect():
     LOG.info(f"Sawdust coverage: {round(ratio*100,2)}%")
 
 
+def test_detect_contours():
+    """Test the contours detection algorithm"""
+    img_path = data_path / "test_assorted.jpg"
+
+    img = detection.load_image(img_path)
+    img = detection.rescale_image(img=img, scale=0.25)
+
+    LOG.info(f"Detecting contours in '{img_path}'")
+    detection.detect_contours(img)
+
+
+def test_detect_blobs():
+    """Test the blob detection algorithm"""
+    img_path = data_path / "test_assorted.jpg"
+
+    img = detection.load_image(img_path)
+    img = detection.rescale_image(img=img, scale=0.25)
+
+    LOG.info(f"Detecting blobs in '{img_path}'")
+    detection.detect_blobs(img)
+
+
 @pytest.mark.star
+def test_detect_dust():
+    """Test the dust detection algorithm"""
+    img_path = data_path / "test_assorted.jpg"
+
+    img = detection.load_image(img_path)
+    img = detection.rescale_image(img=img, scale=0.25)
+
+    LOG.info(f"Detecting sawdust in '{img_path}'")
+    detection.detect_dust(img)
+
+
 def test_detect_cereal():
     """Test the detection function."""
     img_path = data_path / "test_cereal.jpg"

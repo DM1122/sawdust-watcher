@@ -70,6 +70,110 @@ def rescale_image(img, scale):
     return img
 
 
+def detect_contours(img):
+
+    # convert to gray to be compatible with cv.findContours()
+    img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    cv.imshow("grayscale", img_gray)
+    cv.waitKey(0)
+
+    # threshold
+    thresh, img_thresh = cv.threshold(img_gray, 127, 255, cv.THRESH_BINARY)
+    # img_thresh = cv.adaptiveThreshold(img_gray, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 255, 0)
+    cv.imshow(f"threshold ({thresh})", img_thresh)
+    cv.waitKey(0)
+
+    # contours
+    contours, hierarchy = cv.findContours(
+        img_thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE
+    )
+    img_contours = cv.drawContours(
+        img, contours, -1, (0, 255, 0), 3
+    )  # draw all contours by passing -1 as the contour index
+    cv.imshow("contours", img_contours)
+    cv.waitKey(0)
+
+
+def detect_blobs(img):
+
+    # convert to gray
+    img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    cv.imshow("Grayscale", img_gray)
+    cv.waitKey(0)
+
+    img_neg = cv.bitwise_not(img_gray)
+    cv.imshow("Negative", img_neg)
+    cv.waitKey(0)
+
+    # Setup SimpleBlobDetector parameters.
+    params = cv.SimpleBlobDetector_Params()
+
+    # Change thresholds
+    params.minThreshold = 100
+    params.maxThreshold = 255
+
+    # Filter by Area.
+    params.filterByArea = False
+    params.minArea = 1500
+
+    # Filter by Circularity
+    params.filterByCircularity = False
+    params.minCircularity = 0.1
+
+    # Filter by Convexity
+    params.filterByConvexity = False
+    params.minConvexity = 0.87
+
+    # Filter by Inertia
+    params.filterByInertia = False
+    params.minInertiaRatio = 0.01
+
+    # Create a detector with the parameters
+    detector = cv.SimpleBlobDetector_create(params)
+
+    # Detect blobs
+    keypoints = detector.detect(img_neg)
+
+    # Draw detected blobs as red circles.
+    # cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures
+    # the size of the circle corresponds to the size of blob
+    img_blobs = cv.drawKeypoints(
+        img,
+        keypoints,
+        np.array([]),
+        (0, 0, 255),
+        cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
+    )
+
+    # Show blobs
+    write_image(img=img_blobs, output_path="output/blobs.png")
+    cv.imshow("Keypoints", img_blobs)
+    cv.waitKey(0)
+
+
+def detect_dust(img):
+    img_median = cv.medianBlur(img, 11)  # tune this value
+    cv.imshow("Median", img_median)
+    cv.waitKey(0)
+
+    img_diff = cv.subtract(img, img_median)
+    cv.imshow("Difference", img_diff)
+    cv.waitKey(0)
+
+    img_gray = cv.cvtColor(img_diff, cv.COLOR_BGR2GRAY)
+    cv.imshow("Grayscale", img_gray)
+    cv.waitKey(0)
+
+    _, img_thresh = cv.threshold(img_gray, 32, 255, cv.THRESH_BINARY)  # tune this value
+    cv.imshow("Threshold", img_thresh)
+    cv.waitKey(0)
+
+    kernal = np.ones((5, 5), np.uint8)
+    img_closing = cv.morphologyEx(img_thresh, cv.MORPH_CLOSE, kernal, iterations=3)
+    cv.imshow("Closing", img_closing)
+    cv.waitKey(0)
+
+
 def detect(img, output_path, thresh_lower=128, thresh_upper=255):
     """Detect sawdust coverage in an image.
 
