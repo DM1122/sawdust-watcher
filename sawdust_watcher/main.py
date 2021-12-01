@@ -100,9 +100,10 @@ def run(output_path, config):
                     led.on()
                     buzzer.on()
                 else:
-                    LOG.info("Sawdust coverage under threshold")
+                    LOG.info(
+                        "Sawdust coverage under threshold. Waiting for next scan interval"
+                    )
                     time_start = time.time()
-
 
         if button.is_pressed:
             LOG.info("Button pressed. Resetting alarm")
