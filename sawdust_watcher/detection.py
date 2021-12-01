@@ -39,6 +39,7 @@ def write_image(img, output_path):
         bool: True if the image was successfully saved, False otherwise.
     """
     LOG.debug(f"Writing image {type(img)} to {output_path}")
+    LOG.debug(img)
     result = cv.imwrite(filename=str(output_path), img=img)
 
     if not result:
