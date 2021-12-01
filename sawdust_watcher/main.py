@@ -32,9 +32,9 @@ def run(output_path, config):
 
     Args:
         output_path (str): The output path for logging and images.
-        config (dict): The configuration.
+        config (dict): The program configuration.
     """
-    output_path = Path(output_path).expanduser()
+    output_path = Path(output_path).expanduser()  # expands ~ to home directory (unix)
 
     # region logging config
     log_time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -70,17 +70,24 @@ def run(output_path, config):
             if time.time() >= time_start + config.getint("op", "scan_interval"):
                 LOG.info("Scanning area for sawdust")
 
-                img_path = gpio_control.grab_frame(
-                    output_path / "captures",
-                    resolution=eval(config.get("op", "resolution")),
+                img = gpio_control.grab_frame(
+                    eval(config.get("op", "resolution")),
                 )
-                img = detection.load_image(img_path)
-                coverage_ratio = detection.detect(
+                coverage_ratio, img_pipe = detection.detect(
                     img=img,
-                    output_path=output_path / "captures",
-                    thresh_lower=config.getint("image", "thresh_lower"),
-                    thresh_upper=config.getint("image", "thresh_upper"),
+                    noise_size=config.getint("detect", "noise_size"),
+                    threshold=config.getint("detect", "threshold"),
+                    morph_size=config.getint("detect", "morph_size"),
                 )
+
+                time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                for key, value in img_pipe.items():
+                    detection.write_image(
+                        img=value,
+                        output_path=(
+                            output_path / "images" / time_stamp / key
+                        ).with_suffix(".png"),
+                    )
 
                 LOG.info(f"Sawdust detected at {round(coverage_ratio*100,2)}% coverage")
 
