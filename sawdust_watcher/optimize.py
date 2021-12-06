@@ -8,6 +8,7 @@ import numpy as np
 
 LOG = logging.getLogger(__name__)
 
+
 def load_image(img_path):
     """Read a color image from specified path into numpy array.
     Args:
@@ -135,6 +136,7 @@ def detect(img, noise_size=11, threshold=32, morph_size=5, interactive=False):
 
     return ratio, img_morph
 
+
 if __name__ == "__main__":
 
     refinement = 3
@@ -158,14 +160,35 @@ if __name__ == "__main__":
 
                 mS = int(mS)
 
-                for imgIndex in range(2498, 2510): # This is the index of each image, according to the image name
-                    imgPath = r"C:\Users\Daniel F\Desktop\UofT\2T1\ESC204\Design\IMG_" + str(imgIndex) + ".jpg"
-                    outputPath = r"F:\Output\IMG_" + str(imgIndex) + "_" + "nS" + str(nS) + "_" + "th" + str(th) + "_" + "mS" + str(mS) + "_out.jpg"
-                    keyName = "nS" + str(nS) + "_" + "th" + str(th) + "_" + "mS" + str(mS)
+                for imgIndex in range(
+                    2498, 2510
+                ):  # This is the index of each image, according to the image name
+                    imgPath = (
+                        r"C:\Users\Daniel F\Desktop\UofT\2T1\ESC204\Design\IMG_"
+                        + str(imgIndex)
+                        + ".jpg"
+                    )
+                    outputPath = (
+                        r"F:\Output\IMG_"
+                        + str(imgIndex)
+                        + "_"
+                        + "nS"
+                        + str(nS)
+                        + "_"
+                        + "th"
+                        + str(th)
+                        + "_"
+                        + "mS"
+                        + str(mS)
+                        + "_out.jpg"
+                    )
+                    keyName = (
+                        "nS" + str(nS) + "_" + "th" + str(th) + "_" + "mS" + str(mS)
+                    )
 
                     for char in keyName:
                         if char in "?.!/;:":
-                            keyName = keyName.replace(char, '')
+                            keyName = keyName.replace(char, "")
 
                     img = load_image(imgPath)
                     img = rescale_image(img, 0.11)

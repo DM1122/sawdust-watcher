@@ -7,18 +7,6 @@ import numpy as np
 import picamera
 
 
-def flash_led(led):
-    """Flash the given LED once.
-
-    Args:
-        led (gpiozero.LED): The led to flash.
-    """
-    led.on()
-    time.sleep(0.5)
-    led.off()
-    time.sleep(0.5)
-
-
 def grab_frame(resolution=(720, 480)):
     """Capture a frame from the camera and save to disk.
 
